@@ -2,5 +2,12 @@
   <h1>
     Welcome to {{ title }}!
   </h1>
-  <input type="file" (change)="onFileChange($event)" />
+  <select [(ngModel)]="conversionType" (change)="onConversionTypeChange()">
+    <option value="">Select Conversion Type</option>
+    <option value="xlsx-to-csv">XLSX to CSV</option>
+    <option value="csv-to-xml">CSV to XML</option>
+    <option value="xlsx-to-xml">XLSX to XML</option>
+  </select>
+  <br><br>
+  <input type="file" *ngIf="conversionType != ''" (change)="onFileChange($event)" [accept]="acceptedFileTypes" multiple />
 </div>
