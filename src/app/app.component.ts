@@ -26,7 +26,8 @@ export class AppComponent {
   }
 
   downloadCSV(csv: string, filename: string) {
-    const blob: Blob = new Blob([csv], { type: 'text/csv' });
+    const bom = '\uFEFF';
+    const blob: Blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
     const url: string = window.URL.createObjectURL(blob);
     const a: HTMLAnchorElement = document.createElement('a');
     a.href = url;
