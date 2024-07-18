@@ -28,24 +28,54 @@ function convertXlsxToCsv(bstr: string, filename: string) {
   return { csvData, filename: filename.replace('.xlsx', '.csv') };
 }
 
+// function convertCsvToXml(csv: string, filename: string) {
+//   const csvRows = csv.split('\n');
+//   let xmlData = '<?xml version="1.0" encoding="UTF-8"?><root>';
+  
+//   const headers = csvRows[0].split(',');
+//   for (let i = 1; i < csvRows.length; i++) {
+//     const row = csvRows[i].split(',');
+//     xmlData += '<row>';
+//     for (let j = 0; j < headers.length; j++) {
+//       xmlData += `<${headers[j]}>${row[j]}</${headers[j]}>`;
+//     }
+//     xmlData += '</row>';
+//   }
+//   xmlData += '</root>';
+  
+//   return { xmlData, filename: filename.replace('.csv', '.xml') };
+// }
 function convertCsvToXml(csv: string, filename: string) {
   const csvRows = csv.split('\n');
-  let xmlData = '<?xml version="1.0" encoding="UTF-8"?><root>';
-  
-  const headers = csvRows[0].split(',');
-  for (let i = 1; i < csvRows.length; i++) {
-    const row = csvRows[i].split(',');
-    xmlData += '<row>';
-    for (let j = 0; j < headers.length; j++) {
-      xmlData += `<${headers[j]}>${row[j]}</${headers[j]}>`;
+    let xmlData = '<?xml version="1.0" encoding="UTF-8"?><root>';
+    
+    const headers = csvRows[0].split(',').map(formatHeader);
+    for (let i = 1; i < csvRows.length; i++) {
+        const row = csvRows[i].split(',');
+        xmlData += '<row>';
+        for (let j = 0; j < headers.length; j++) {
+            xmlData += `<${headers[j].trim()}>${sanitizeXmlValue(row[j].trim())}</${headers[j].trim()}>`;
+        }
+        xmlData += '</row>';
     }
-    xmlData += '</row>';
-  }
-  xmlData += '</root>';
+    xmlData += '</root>';
   
   return { xmlData, filename: filename.replace('.csv', '.xml') };
 }
+function sanitizeXmlValue(value:any) {
+  return value != undefined? value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;'):"";
+}
 
+// Function to replace spaces with hyphens in headers and sanitize them
+function formatHeader(header:any) {
+  const formattedHeader = header.trim().replace(/\s+/g, '-');
+  return sanitizeXmlValue(formattedHeader);
+}
 function convertXlsxToXml(bstr: string, filename: string) {
   const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
   const wsname: string = wb.SheetNames[0];
@@ -55,12 +85,12 @@ function convertXlsxToXml(bstr: string, filename: string) {
   const csvRows = csv.split('\n');
   let xmlData = '<?xml version="1.0" encoding="UTF-8"?><root>';
   
-  const headers = csvRows[0].split(',');
+  const headers = csvRows[0].split(',').map(formatHeader);
   for (let i = 1; i < csvRows.length; i++) {
     const row = csvRows[i].split(',');
     xmlData += '<row>';
     for (let j = 0; j < headers.length; j++) {
-      xmlData += `<${headers[j]}>${row[j]}</${headers[j]}>`;
+      xmlData += `<${headers[j].trim()}>${sanitizeXmlValue(row[j].trim())}</${headers[j].trim()}>`;
     }
     xmlData += '</row>';
   }

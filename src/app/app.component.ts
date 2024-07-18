@@ -78,11 +78,22 @@ export class AppComponent {
     }
   }
 
+  // downloadFile(content: string, filename: string, contentType: string) {
+  //   const bom = '\uFEFF';
+  //   const blob: Blob = new Blob([bom + content], { type: contentType });
+  //   const url: string = window.URL.createObjectURL(blob);
+  //   const a: HTMLAnchorElement = document.createElement('a');
+  //   a.href = url;
+  //   a.download = filename;
+  //   document.body.appendChild(a);
+  //   a.click();
+  //   document.body.removeChild(a);
+  // }
   downloadFile(content: string, filename: string, contentType: string) {
     const bom = '\uFEFF';
-    const blob: Blob = new Blob([bom + content], { type: contentType });
-    const url: string = window.URL.createObjectURL(blob);
-    const a: HTMLAnchorElement = document.createElement('a');
+    const blob = new Blob([bom + content], { type: contentType });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
