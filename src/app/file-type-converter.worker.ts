@@ -54,7 +54,12 @@ function convertCsvToXml(csv: string, filename: string) {
         const row = csvRows[i].split(',');
         xmlData += '<row>';
         for (let j = 0; j < headers.length; j++) {
-            xmlData += `<${headers[j].trim()}>${sanitizeXmlValue(row[j].trim())}</${headers[j].trim()}>`;
+          let headerVal = headers[j];
+          let rowVal =row[j];
+            if(headerVal == undefined || rowVal == undefined) continue;              
+              headerVal = headerVal.trim();
+              rowVal = rowVal.trim();
+            xmlData += `<${headerVal}>${sanitizeXmlValue(rowVal)}</${headerVal}>`;
         }
         xmlData += '</row>';
     }
@@ -73,6 +78,7 @@ function sanitizeXmlValue(value:any) {
 
 // Function to replace spaces with hyphens in headers and sanitize them
 function formatHeader(header:any) {
+  if(header == undefined)return "";
   const formattedHeader = header.trim().replace(/\s+/g, '-');
   return sanitizeXmlValue(formattedHeader);
 }
@@ -90,7 +96,12 @@ function convertXlsxToXml(bstr: string, filename: string) {
     const row = csvRows[i].split(',');
     xmlData += '<row>';
     for (let j = 0; j < headers.length; j++) {
-      xmlData += `<${headers[j].trim()}>${sanitizeXmlValue(row[j].trim())}</${headers[j].trim()}>`;
+      let headerVal = headers[j];
+      let rowVal =row[j];
+        if(headerVal == undefined || rowVal == undefined) continue;              
+          headerVal = headerVal.trim();
+          rowVal = rowVal.trim();
+        xmlData += `<${headerVal}>${sanitizeXmlValue(rowVal)}</${headerVal}>`;
     }
     xmlData += '</row>';
   }
